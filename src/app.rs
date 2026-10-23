@@ -8,22 +8,22 @@ use eframe::egui::{self, Align, Color32, Key, KeyboardShortcut, Modifiers, Viewp
 use rfd::{FileDialog, MessageButtons, MessageDialog, MessageDialogResult, MessageLevel};
 use serde_json::{Value, json};
 
-use crate::buffer::{Motion, Selection};
-use crate::completion;
-use crate::document::Document;
-use crate::editor_view::{self, Command};
-use crate::highlight::{Highlighter, Syntaxes, blend};
-use crate::keymap::{self, Condition, NamedCommand};
-use crate::layout::{Group, Layout, Preset};
-use crate::macros::{MacroFile, Step};
-use crate::menu::{Item, Menu, NativeItem};
+use crate::text::buffer::{Motion, Selection};
+use crate::language::completion;
+use crate::text::document::Document;
+use crate::ui::editor_view::{self, Command};
+use crate::language::highlight::{Highlighter, Syntaxes, blend};
+use crate::packages::keymap::{self, Condition, NamedCommand};
+use crate::ui::layout::{Group, Layout, Preset};
+use crate::packages::macros::{MacroFile, Step};
+use crate::ui::menu::{Item, Menu, NativeItem};
 use crate::packages::{self, Dirs, Loaded, Package, Resource};
-use crate::palette::{Candidate, Mode, Palette, Pick};
-use crate::recent::{self, Recent};
-use crate::session::{Session, Store, Tab};
-use crate::settings::{self, MAX_FONT_SIZE, MIN_FONT_SIZE, Settings};
-use crate::snippets::Snippet;
-use crate::menu_file::MenuItem;
+use crate::ui::palette::{Candidate, Mode, Palette, Pick};
+use crate::workspace::recent::{self, Recent};
+use crate::workspace::session::{Session, Store, Tab};
+use crate::workspace::settings::{self, MAX_FONT_SIZE, MIN_FONT_SIZE, Settings};
+use crate::language::snippets::Snippet;
+use crate::packages::menu_file::MenuItem;
 use crate::workspace::Workspace;
 
 mod autocomplete;
@@ -289,7 +289,7 @@ pub struct EditorApp {
     last_session_save: Instant,
     #[cfg(target_os = "macos")]
     /// The macOS menu bar; without it the menus are drawn in the window.
-    native_menu: Option<crate::menu::NativeMenuBar<Action>>,
+    native_menu: Option<crate::ui::menu::NativeMenuBar<Action>>,
     /// Split views: how the editor area is divided, and each group's tabs.
     layout: Layout,
     groups: Vec<Group>,
@@ -376,7 +376,7 @@ impl EditorApp {
             session_saved: 0,
             last_session_save: Instant::now() - SESSION_SAVE_EVERY,
             #[cfg(target_os = "macos")]
-            native_menu: crate::menu::NativeMenuBar::new(ctx),
+            native_menu: crate::ui::menu::NativeMenuBar::new(ctx),
             layout: Layout::default(),
             groups: vec![Group::default()],
             focus_group: 0,
@@ -399,7 +399,7 @@ impl EditorApp {
         // Before restoring tabs, so they can use package languages.
         app.use_packages(ctx, loaded);
         #[cfg(target_os = "macos")]
-        crate::mac_open::set_waker(ctx);
+        crate::ui::mac_open::set_waker(ctx);
         app.restore_session(ctx);
         // Files given on the command line or from Finder open on top.
         for path in paths {
@@ -910,7 +910,7 @@ impl EditorApp {
         }
         self.macro_files.clear();
         for file in &loaded.macros {
-            match file.text().and_then(crate::macros::parse) {
+            match file.text().and_then(crate::packages::macros::parse) {
                 Ok(steps) => self.macro_files.push(MacroFile { path: format!("{}/{}", file.package, file.path), steps }),
                 Err(e) => errors.push(format!("{}: {e}", file.label())),
             }
@@ -925,7 +925,7 @@ impl EditorApp {
             if file.package == "Default" {
                 continue;
             }
-            use crate::menu_file as m;
+            use crate::packages::menu_file as m;
             let into = match packages::base_name(&file.path) {
                 m::MAIN => &mut self.package_main_menu,
                 m::SIDE_BAR => &mut self.package_side_bar_menu,
@@ -1330,7 +1330,7 @@ impl EditorApp {
             // Inside a zip: shown, not saved back.
             self.new_doc();
             let doc = self.doc();
-            doc.buffer = crate::buffer::Buffer::new(&text);
+            doc.buffer = crate::text::buffer::Buffer::new(&text);
             doc.name = Some(name.clone());
             doc.scratch = true;
         }
@@ -2432,7 +2432,7 @@ impl eframe::App for EditorApp {
             #[cfg(target_os = "macos")]
             let hidden = {
                 self.save_session();
-                crate::mac_open::hide_app()
+                crate::ui::mac_open::hide_app()
             };
             #[cfg(not(target_os = "macos"))]
             let hidden = false;
@@ -2449,7 +2449,7 @@ impl eframe::App for EditorApp {
         }
         // Files opened from Finder or the Dock.
         #[cfg(target_os = "macos")]
-        for path in crate::mac_open::take() {
+        for path in crate::ui::mac_open::take() {
             self.open_any(&ctx, path);
             self.focus_editor(&ctx);
         }
@@ -2477,7 +2477,7 @@ impl eframe::App for EditorApp {
         }
 
         if !self.has_native_menu() {
-            egui::Panel::top("menu").show(ui, |ui| crate::menu::egui_menu_bar(ui, &menus, &mut actions));
+            egui::Panel::top("menu").show(ui, |ui| crate::ui::menu::egui_menu_bar(ui, &menus, &mut actions));
         }
         egui::Panel::bottom("status").show(ui, |ui| self.status_bar(ui));
         if self.sidebar_override.unwrap_or(self.settings.show_sidebar) {
@@ -3313,7 +3313,7 @@ class PickCommand(sublime_plugin.WindowCommand):
         let app = h.state();
         assert_eq!(app.settings.ignored_packages, ["Night"]);
         assert!(!app.theme_names.iter().any(|n| n == "Night"));
-        assert_eq!(app.highlighter.theme_name(), crate::highlight::DEFAULT_THEME);
+        assert_eq!(app.highlighter.theme_name(), crate::language::highlight::DEFAULT_THEME);
         assert_eq!(app.docs[app.active].syntax(), "Plain Text");
 
         // The theme choice is kept while its package is off, so it comes back.
@@ -3474,7 +3474,7 @@ class PickCommand(sublime_plugin.WindowCommand):
         assert_eq!(text(&h), "(x)\n\n", "the whole playback is one undo step");
 
         // Saved, it reads as commands.
-        let saved: Value = serde_json::from_str(&crate::macros::to_json(&h.state().last_macro)).unwrap();
+        let saved: Value = serde_json::from_str(&crate::packages::macros::to_json(&h.state().last_macro)).unwrap();
         let names: Vec<&str> = saved.as_array().unwrap().iter().map(|c| c["command"].as_str().unwrap()).collect();
         assert_eq!(names, ["insert", "move", "insert", "duplicate_line"]);
     }
@@ -3697,7 +3697,7 @@ class Completions(texteditor.EventListener):
         // The phantom sits where it was put; its link calls the plugin back.
         let phantoms = h.state().phantoms_for(index);
         assert_eq!(phantoms.len(), 1);
-        assert_eq!(crate::minihtml::plain_text(&phantoms[0].content), "Note: more");
+        assert_eq!(crate::ui::minihtml::plain_text(&phantoms[0].content), "Note: more");
         // The popup is up until the text changes.
         wait_until(&mut h, "the plugin's print", |app| app.plugins.log.iter().any(|l| l == "popup True True"));
         h.state_mut().phantom_navigate(phantoms[0].id, "more".into());
@@ -3961,8 +3961,8 @@ class Late(texteditor.EventListener):
         let side = h.state().runnable_menu(&h.state().package_side_bar_menu);
         assert_eq!(side.len(), 1, "the item with no command to run is left out");
         assert_eq!(h.state().runnable_menu(&h.state().package_tab_menu).len(), 1);
-        let crate::menu_file::MenuItem::Entry { command: Some(stamp), .. } = &side[0] else { panic!() };
-        let filled = crate::menu_file::with_args(stamp, &[("paths", serde_json::json!(["/x"]))]);
+        let crate::packages::menu_file::MenuItem::Entry { command: Some(stamp), .. } = &side[0] else { panic!() };
+        let filled = crate::packages::menu_file::with_args(stamp, &[("paths", serde_json::json!(["/x"]))]);
         assert_eq!(filled.args["paths"], serde_json::json!(["/x"]));
         h.state_mut().menu_pick(&ctx, package_menus::MenuPick::Command(filled));
         assert_eq!(text(&h), "S");
@@ -4042,7 +4042,7 @@ class Late(texteditor.EventListener):
         let long = "Abstract Markup Language syntax highlighting, code snippets, and build system for Sublime Text, and more besides";
         let offer = ["Abrase", "Abstract Markup Language", "A File Icon"]
             .iter()
-            .map(|name| crate::package_index::IndexPackage {
+            .map(|name| crate::packages::package_index::IndexPackage {
                 name: name.to_string(),
                 description: long.into(),
                 homepage: String::new(),

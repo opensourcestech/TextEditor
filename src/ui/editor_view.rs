@@ -11,13 +11,13 @@ use eframe::egui::{
     scroll_area::{DragScroll, ScrollSource},
 };
 
-use crate::buffer::{Buffer, Edit, EditKind, FieldTransform, Motion, Selection};
-use crate::document::Document;
-use crate::highlight::{EditorColors, Highlighter, Span, blend};
-use crate::minihtml;
-use crate::settings::Settings;
-use crate::snippets::{self, Snippet};
-use crate::wrap::RowMap;
+use crate::text::buffer::{Buffer, Edit, EditKind, FieldTransform, Motion, Selection};
+use crate::text::document::Document;
+use crate::language::highlight::{EditorColors, Highlighter, Span, blend};
+use crate::ui::minihtml;
+use crate::workspace::settings::Settings;
+use crate::language::snippets::{self, Snippet};
+use crate::text::wrap::RowMap;
 
 /// Time per frame spent coloring lines far below what was colored so far.
 const HIGHLIGHT_BUDGET: Duration = Duration::from_millis(8);
@@ -1563,7 +1563,7 @@ struct LineInfo {
 }
 
 impl LineInfo {
-    fn new(b: &Buffer, map: &RowMap, line: usize, find: Option<(&str, bool)>, width: crate::wrap::Width) -> Self {
+    fn new(b: &Buffer, map: &RowMap, line: usize, find: Option<(&str, bool)>, width: crate::text::wrap::Width) -> Self {
         let text = b.line_text(line);
         let starts = map.line_breaks(b, line, width);
         let mut start_bytes = Vec::with_capacity(starts.len());
@@ -1713,7 +1713,7 @@ mod tests {
     fn harness(text: &str) -> Harness<'static, Fixture> {
         let mut doc = Document::new_untitled(1);
         doc.buffer = Buffer::new(text);
-        let fixture = Fixture { doc, settings: Settings::default(), highlighter: Highlighter::new(crate::highlight::DEFAULT_THEME, &Default::default()) };
+        let fixture = Fixture { doc, settings: Settings::default(), highlighter: Highlighter::new(crate::language::highlight::DEFAULT_THEME, &Default::default()) };
         Harness::new_ui_state(
             |ui, f: &mut Fixture| {
                 let cx = ViewContext { settings: &f.settings, highlighter: &f.highlighter, find: None, snippets: &[], highlights: &[], phantoms: &[] };
@@ -1728,7 +1728,7 @@ mod tests {
         let mut doc = Document::new_untitled(1);
         doc.buffer = Buffer::new(text);
         let settings = Settings { word_wrap: true, ..Settings::default() };
-        let fixture = Fixture { doc, settings, highlighter: Highlighter::new(crate::highlight::DEFAULT_THEME, &Default::default()) };
+        let fixture = Fixture { doc, settings, highlighter: Highlighter::new(crate::language::highlight::DEFAULT_THEME, &Default::default()) };
         let mut h = Harness::builder().with_size(egui::vec2(320.0, 300.0)).build_ui_state(
             |ui, f: &mut Fixture| {
                 let cx = ViewContext { settings: &f.settings, highlighter: &f.highlighter, find: None, snippets: &[], highlights: &[], phantoms: &[] };
@@ -1752,7 +1752,7 @@ mod tests {
         let mut doc = Document::new_untitled(1);
         doc.buffer = Buffer::new("one\ntwo\nthree");
         let settings = Settings { word_wrap: wrap, ..Settings::default() };
-        let fixture = Fixture { doc, settings, highlighter: Highlighter::new(crate::highlight::DEFAULT_THEME, &Default::default()) };
+        let fixture = Fixture { doc, settings, highlighter: Highlighter::new(crate::language::highlight::DEFAULT_THEME, &Default::default()) };
         let content = minihtml::parse("<b>error</b>: here<br>and <a href='x'>fix</a>");
         let phantoms = vec![Phantom { id: 7, at: 1, content, layout: PhantomLayout::Below }];
         let mut h = Harness::builder().with_size(egui::vec2(500.0, 300.0)).build_ui_state(

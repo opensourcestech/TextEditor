@@ -1,5 +1,5 @@
 //! Find in Files (⇧⌘F): the panel, searches running in the background,
-//! the Find Results tab, and Replace (see `crate::search`).
+//! the Find Results tab, and Replace (see `crate::workspace::search`).
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -11,9 +11,9 @@ use eframe::egui::{self, Align, Key};
 use rfd::{FileDialog, MessageButtons, MessageDialog, MessageDialogResult, MessageLevel};
 
 use super::{Action, EditorApp};
-use crate::buffer::{Buffer, Edit, Selection};
-use crate::editor_view::ViewState;
-use crate::search::{self, FileMatches, Query, Scope, Update};
+use crate::text::buffer::{Buffer, Edit, Selection};
+use crate::ui::editor_view::ViewState;
+use crate::workspace::search::{self, FileMatches, Query, Scope, Update};
 
 /// The marks that highlight matches in Find Results.
 pub(super) const RESULTS_MARKS: &str = "find:results";

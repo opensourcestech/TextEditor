@@ -13,6 +13,11 @@
 //! archive, so one file of an installed package can be changed without
 //! unpacking it. `User` loads last, so its files win.
 
+pub mod keymap;
+pub mod macros;
+pub mod menu_file;
+pub mod package_index;
+
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::hash::{Hash, Hasher};
@@ -31,7 +36,7 @@ const ARCHIVE_EXTS: [&str; 2] = ["te-package", "sublime-package"];
 const METADATA_FILE: &str = "package-metadata.json";
 /// The menu files TextEditor reads, by name.
 const MENUS: [&str; 4] =
-    [crate::menu_file::MAIN, crate::menu_file::CONTEXT, crate::menu_file::SIDE_BAR, crate::menu_file::TAB_CONTEXT];
+    [crate::packages::menu_file::MAIN, crate::packages::menu_file::CONTEXT, crate::packages::menu_file::SIDE_BAR, crate::packages::menu_file::TAB_CONTEXT];
 /// Key bindings for every platform, then for this one: `Default.te-keymap`
 /// and `Default (OSX).te-keymap`, say.
 const KEYMAPS: [&str; 2] = [
@@ -154,7 +159,7 @@ impl Dirs {
         if cfg!(test) {
             return None;
         }
-        crate::settings::config_dir().map(|d| Self::at(&d))
+        crate::workspace::settings::config_dir().map(|d| Self::at(&d))
     }
 
     pub fn at(root: &Path) -> Self {

@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use crate::buffer::Buffer;
-use crate::editor_view::ViewState;
-use crate::highlight::LineCache;
+use crate::text::buffer::Buffer;
+use crate::ui::editor_view::ViewState;
+use crate::language::highlight::LineCache;
 
 /// One open file (or an unsaved "untitled" buffer) shown as a tab.
 pub struct Document {
@@ -133,7 +133,7 @@ impl Document {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::buffer::{EditKind, Motion};
+    use crate::text::buffer::{EditKind, Motion};
 
     #[test]
     fn crlf_files_round_trip() {

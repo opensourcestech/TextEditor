@@ -612,33 +612,47 @@ the folder in `TEXTEDITOR_SCREENSHOTS` (or the temp folder).
 
 ### Project layout
 
+The source is grouped into folders by area:
+
+```
+src/
+  main.rs       startup
+  app.rs, app/  the application window and what it puts on screen
+  text/         the text model
+  ui/           drawing and input
+  language/     highlighting, autocomplete and snippets
+  packages/     packages and the files they hold
+  plugins/      Python plugins
+  workspace/    the open folder, and what's kept between runs
+```
+
 | File | Purpose |
 |---|---|
 | `src/main.rs` | Startup and window options |
 | `src/app.rs` | The application: tabs, menus, find bar, side bar, settings window, session |
-| `src/app/groups.rs`, `src/layout.rs` | Split views: layouts, groups and their tabs |
-| `src/app/find_in_files.rs`, `src/search.rs` | Find in Files: the panel, searching, Find Results, replace |
-| `src/app/autocomplete.rs`, `src/completion.rs` | Autocomplete: the list and where its completions come from |
-| `src/app/macro_ui.rs`, `src/macros.rs` | Recording, playing and saving macros |
-| `src/app/package_menus.rs`, `src/menu_file.rs` | Menus from packages |
-| `src/minihtml.rs` | minihtml, for plugins' popups and phantoms |
-| `src/app/package_index_ui.rs`, `src/package_index.rs` | Install Package… and Upgrade Packages from Package Control's index |
-| `src/editor_view.rs` | The text area widget: drawing, keyboard, mouse, clipboard, IME |
-| `src/buffer.rs` | Text model: rope, multiple selections, undo/redo |
-| `src/wrap.rs` | Word wrap: line-to-row mapping, updated incrementally on edits |
-| `src/highlight.rs` | Incremental syntax highlighting and themes |
-| `src/packages.rs` | Packages: finding, reading, installing and removing them |
-| `src/color_scheme.rs` | The `.te-color-scheme` format |
-| `src/snippets.rs` | Snippet files and template expansion |
-| `src/keymap.rs` | Key binding and command palette files |
-| `src/plugins.rs`, `src/plugin_host/` | Python plugins: the host process and its `texteditor` API |
+| `src/app/groups.rs`, `src/ui/layout.rs` | Split views: layouts, groups and their tabs |
+| `src/app/find_in_files.rs`, `src/workspace/search.rs` | Find in Files: the panel, searching, Find Results, replace |
+| `src/app/autocomplete.rs`, `src/language/completion.rs` | Autocomplete: the list and where its completions come from |
+| `src/app/macro_ui.rs`, `src/packages/macros.rs` | Recording, playing and saving macros |
+| `src/app/package_menus.rs`, `src/packages/menu_file.rs` | Menus from packages |
+| `src/app/package_index_ui.rs`, `src/packages/package_index.rs` | Install Package… and Upgrade Packages from Package Control's index |
 | `src/app/plugin_api.rs` | The editor's answers to the plugin API |
-| `src/document.rs` | One open file: loading, saving, line endings |
-| `src/palette.rs`, `src/fuzzy.rs` | Goto Anything / command palette and fuzzy matching |
+| `src/text/buffer.rs` | Text model: rope, multiple selections, undo/redo |
+| `src/text/document.rs` | One open file: loading, saving, line endings |
+| `src/text/wrap.rs` | Word wrap: line-to-row mapping, updated incrementally on edits |
+| `src/ui/editor_view.rs` | The text area widget: drawing, keyboard, mouse, clipboard, IME |
+| `src/ui/menu.rs` | One menu definition, shown as the macOS menu bar or in-window menus |
+| `src/ui/palette.rs`, `src/ui/fuzzy.rs` | Goto Anything / command palette and fuzzy matching |
+| `src/ui/minihtml.rs` | minihtml, for plugins' popups and phantoms |
+| `src/ui/mac_open.rs` | Files opened from Finder and the Dock |
+| `src/language/highlight.rs` | Incremental syntax highlighting and themes |
+| `src/language/color_scheme.rs` | The `.te-color-scheme` format |
+| `src/language/snippets.rs` | Snippet files and template expansion |
+| `src/packages.rs` | Packages: finding, reading, installing and removing them |
+| `src/packages/keymap.rs` | Key binding and command palette files |
+| `src/plugins.rs`, `src/plugins/plugin_host/` | Python plugins: the host process and its `texteditor` API |
 | `src/workspace.rs` | Open folder: side bar tree and background file index |
-| `src/menu.rs` | One menu definition, shown as the macOS menu bar or in-window menus |
-| `src/settings.rs`, `src/recent.rs`, `src/session.rs` | Settings, recent files, hot exit |
-| `src/mac_open.rs` | Files opened from Finder and the Dock |
+| `src/workspace/settings.rs`, `src/workspace/recent.rs`, `src/workspace/session.rs` | Settings, recent files, hot exit |
 | `packaging/macos/` | App bundle and disk-image build, and the app icon (`AppIcon.icns`) |
 | `packaging/windows/` | Windows `.exe` and zip build, and the app icon (`AppIcon.ico`, `AppIcon.png`) |
 | `build.rs` | Builds the icon and version details into the Windows `.exe` |
@@ -683,7 +697,7 @@ Contributions are welcome — bug reports, ideas and pull requests.
 1. Open an issue describing the bug or feature before large changes.
 2. Keep pull requests focused, and add a test for the behavior you change.
    UI behavior can be tested with `egui_kittest`; see the tests in
-   `src/app.rs` and `src/editor_view.rs`.
+   `src/app.rs` and `src/ui/editor_view.rs`.
 3. Make sure `cargo test` and `cargo clippy --all-targets` pass cleanly.
 
 Unless you explicitly state otherwise, any contribution you submit for

@@ -1,3 +1,12 @@
+//! An open folder: the side bar tree and the background file index, and
+//! the state kept between runs: Find in Files, settings, recent files and
+//! hot exit.
+
+pub mod recent;
+pub mod search;
+pub mod session;
+pub mod settings;
+
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, TryRecvError};

@@ -1,4 +1,4 @@
-//! Menus from packages (see `crate::menu_file`): their items join the
+//! Menus from packages (see `crate::packages::menu_file`): their items join the
 //! menu bar and the right-click menus of the editor, the side bar and tabs,
 //! running the commands they name through the same translation as key
 //! bindings. Also the side bar's and tabs' own right-click items.
@@ -10,9 +10,9 @@ use eframe::egui;
 use serde_json::json;
 
 use super::{Action, EditorApp, PackageCommand, Standard, translate};
-use crate::keymap::NamedCommand;
-use crate::menu::{Item, Menu};
-use crate::menu_file::{self, MenuItem};
+use crate::packages::keymap::NamedCommand;
+use crate::ui::menu::{Item, Menu};
+use crate::packages::menu_file::{self, MenuItem};
 
 /// A top-level menu from packages, ready to add to the menu bar.
 #[derive(Clone)]

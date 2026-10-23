@@ -1,5 +1,5 @@
 //! Packages > Install Package…, Upgrade Packages and Install Missing
-//! Libraries: the online package index (see `crate::package_index`), with
+//! Libraries: the online package index (see `crate::packages::package_index`), with
 //! downloads in the background.
 
 use std::collections::HashMap;
@@ -10,9 +10,9 @@ use eframe::egui;
 use serde_json::json;
 
 use super::{EditorApp, Target};
-use crate::package_index::{self, Index, IndexPackage};
+use crate::packages::package_index::{self, Index, IndexPackage};
 use crate::packages::{self, Dirs, Package};
-use crate::palette::{Candidate, Mode};
+use crate::ui::palette::{Candidate, Mode};
 
 #[derive(Default)]
 pub(super) struct IndexState {

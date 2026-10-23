@@ -10,7 +10,7 @@ use std::str::FromStr;
 use syntect::highlighting::ScopeSelectors;
 use syntect::parsing::{Regex, Region, Scope};
 
-use crate::buffer::Field;
+use crate::text::buffer::Field;
 
 pub struct Snippet {
     /// Typed before Tab to insert the snippet; empty for palette-only ones.

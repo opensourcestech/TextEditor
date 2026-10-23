@@ -1,13 +1,13 @@
 //! Split views: the editor area divided into groups, each with its own tabs
-//! and one of them in front (see `crate::layout`).
+//! and one of them in front (see `crate::ui::layout`).
 
 use eframe::egui::{self, CursorIcon, Rect, Sense, UiBuilder, pos2};
 
 use std::collections::BTreeMap;
 
 use super::{Action, EditorApp};
-use crate::editor_view::{self, ViewContext, ViewOutput};
-use crate::layout::{self, Layout};
+use crate::ui::editor_view::{self, ViewContext, ViewOutput};
+use crate::ui::layout::{self, Layout};
 
 /// A window set aside when a plugin opened a new one. This editor has one
 /// window, so `new_window` puts its tabs, layout and side bar aside; they
@@ -360,7 +360,7 @@ impl EditorApp {
                 self.focus_editor(ctx);
             }
             let items = self.context_menu_items();
-            response.context_menu(|ui| crate::menu::egui_items(ui, &items, actions));
+            response.context_menu(|ui| crate::ui::menu::egui_items(ui, &items, actions));
         }
     }
 

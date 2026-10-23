@@ -47,7 +47,7 @@ impl Store {
         if cfg!(test) {
             return None;
         }
-        crate::settings::config_dir().map(|d| Self::at(d.join("session")))
+        crate::workspace::settings::config_dir().map(|d| Self::at(d.join("session")))
     }
 
     pub fn at(dir: PathBuf) -> Self {

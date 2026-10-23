@@ -8,7 +8,7 @@
 
 use serde_json::Value;
 
-use crate::keymap::NamedCommand;
+use crate::packages::keymap::NamedCommand;
 
 /// The menu files, by name: `Main.te-menu` (or `Main.sublime-menu`)…
 pub const MAIN: &str = "Main";

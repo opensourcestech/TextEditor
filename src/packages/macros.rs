@@ -6,9 +6,9 @@
 use eframe::egui::{Key, Modifiers};
 use serde_json::{Value, json};
 
-use crate::buffer::Motion;
-use crate::editor_view::Command;
-use crate::keymap::NamedCommand;
+use crate::text::buffer::Motion;
+use crate::ui::editor_view::Command;
+use crate::packages::keymap::NamedCommand;
 
 /// One thing a macro does.
 #[derive(Clone, Debug, PartialEq)]

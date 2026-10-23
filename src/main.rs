@@ -3,38 +3,18 @@
 #![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
 
 mod app;
-mod buffer;
-mod color_scheme;
-mod completion;
-mod document;
-mod editor_view;
-mod fuzzy;
-mod highlight;
-mod keymap;
-mod layout;
-#[cfg(target_os = "macos")]
-mod mac_open;
-mod macros;
-mod menu;
-mod menu_file;
-mod minihtml;
-mod package_index;
+mod language;
 mod packages;
-mod palette;
 mod plugins;
-mod recent;
-mod search;
-mod session;
-mod settings;
-mod snippets;
+mod text;
+mod ui;
 mod workspace;
-mod wrap;
 
 use std::path::PathBuf;
 
 fn main() -> eframe::Result {
     #[cfg(target_os = "macos")]
-    mac_open::install();
+    ui::mac_open::install();
 
     // Files passed on the command line open as tabs, and a folder opens in the
     // side bar: `text_editor . src/main.rs`

@@ -1,13 +1,13 @@
-//! Recording, playing back and saving macros (see `crate::macros`).
+//! Recording, playing back and saving macros (see `crate::packages::macros`).
 
 use eframe::egui::{self, Event, ImeEvent};
 use rfd::FileDialog;
 use serde_json::{Value, json};
 
 use super::{Action, EditorApp, PackageCommand, Standard};
-use crate::editor_view::{self, ViewContext};
-use crate::keymap::NamedCommand;
-use crate::macros::{self, Step};
+use crate::ui::editor_view::{self, ViewContext};
+use crate::packages::keymap::NamedCommand;
+use crate::packages::macros::{self, Step};
 use crate::packages;
 
 impl EditorApp {

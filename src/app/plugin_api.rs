@@ -1,6 +1,6 @@
 //! The editor's side of Python plugins: starting the plugin host with the
 //! packages' plugins, sending it commands and events, and answering its
-//! calls, which are the plugin API (`src/plugin_host/texteditor.py`).
+//! calls, which are the plugin API (`src/plugins/plugin_host/texteditor.py`).
 
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
@@ -15,17 +15,17 @@ use syntect::highlighting::ScopeSelectors;
 use syntect::parsing::{Regex, Region, Scope};
 
 use super::{EditorApp, PackageCommand, translate};
-use crate::buffer::{Buffer, Edit, Selection};
-use crate::completion::Completion;
-use crate::document::Document;
-use crate::editor_view::{self, Highlight, Phantom, PhantomLayout, draw};
-use crate::keymap::{Condition, NamedCommand};
-use crate::layout::Layout;
-use crate::minihtml;
+use crate::text::buffer::{Buffer, Edit, Selection};
+use crate::language::completion::Completion;
+use crate::text::document::Document;
+use crate::ui::editor_view::{self, Highlight, Phantom, PhantomLayout, draw};
+use crate::packages::keymap::{Condition, NamedCommand};
+use crate::ui::layout::Layout;
+use crate::ui::minihtml;
 use crate::packages::Package;
-use crate::palette::Mode;
+use crate::ui::palette::Mode;
 use crate::plugins::{self, PluginHost};
-use crate::settings::Settings;
+use crate::workspace::settings::Settings;
 
 /// How long the editor waits for a plugin command before letting it finish
 /// in the background. Most commands are done well within this, so keys
@@ -645,7 +645,7 @@ impl EditorApp {
     pub(super) fn show_plugin_console(&mut self) {
         self.new_doc();
         let text = if self.plugins.log.is_empty() { "No plugin output yet.\n".to_owned() } else { self.plugins.log.join("\n") + "\n" };
-        self.doc().buffer.insert(&text, crate::buffer::EditKind::Other);
+        self.doc().buffer.insert(&text, crate::text::buffer::EditKind::Other);
     }
 
     /// The tab or output panel with view id `id`, ready to be edited.
@@ -1240,7 +1240,7 @@ fn plugin_dialog(kind: &str, text: &str, ok_title: &str) -> Value {
 /// `View.find` and `find_all`: a regex (or with flag 1, literal text; flag
 /// 2 ignores case) from char `start`, as char ranges.
 fn find_in(b: &Buffer, pattern: &str, flags: u64, start: usize, all: bool) -> Result<Vec<(usize, usize)>, String> {
-    let mut pattern = if flags & 1 != 0 { crate::search::escape_regex(pattern) } else { pattern.to_owned() };
+    let mut pattern = if flags & 1 != 0 { crate::workspace::search::escape_regex(pattern) } else { pattern.to_owned() };
     if flags & 2 != 0 {
         pattern = format!("(?i){pattern}");
     }

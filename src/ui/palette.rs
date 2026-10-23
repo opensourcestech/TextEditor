@@ -2,7 +2,7 @@ use eframe::egui::{
     self, Align2, AtomExt, Button, Color32, Key, Modifiers, Order, TextFormat, TextStyle, text::LayoutJob,
 };
 
-use crate::fuzzy::fuzzy_match;
+use crate::ui::fuzzy::fuzzy_match;
 
 /// Only the best matches are drawn; nobody scrolls past this many.
 const MAX_ROWS: usize = 200;

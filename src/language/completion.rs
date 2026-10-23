@@ -6,8 +6,8 @@ use std::collections::HashMap;
 
 use serde_json::Value;
 
-use crate::buffer::Buffer;
-use crate::fuzzy::fuzzy_match;
+use crate::text::buffer::Buffer;
+use crate::ui::fuzzy::fuzzy_match;
 
 /// Rows shown at most; the rest are worse matches nobody scrolls to.
 const MAX_SHOWN: usize = 50;

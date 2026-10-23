@@ -61,8 +61,8 @@ impl Default for Settings {
             ignored_packages: Vec::new(),
             python_path: String::new(),
             package_channels: vec![
-                crate::package_index::DEFAULT_CHANNEL.to_owned(),
-                crate::package_index::LIBRARY_CHANNEL.to_owned(),
+                crate::packages::package_index::DEFAULT_CHANNEL.to_owned(),
+                crate::packages::package_index::LIBRARY_CHANNEL.to_owned(),
             ],
             package_repositories: Vec::new(),
         }

@@ -1,14 +1,14 @@
-//! The autocomplete list (see `crate::completion`): it opens while a word
+//! The autocomplete list (see `crate::language::completion`): it opens while a word
 //! is typed, or with Edit > Show Completions, and sits under the caret.
 
 use eframe::egui::{self, AtomExt, Button, Color32, Key, Modifiers, Order, TextFormat, text::LayoutJob};
 
 use super::{Action, EditorApp};
-use crate::buffer::{EditKind, Selection};
-use crate::completion::{self, Completion, Insert, Popup};
-use crate::editor_view;
-use crate::keymap::NamedCommand;
-use crate::macros::Step;
+use crate::text::buffer::{EditKind, Selection};
+use crate::language::completion::{self, Completion, Insert, Popup};
+use crate::ui::editor_view;
+use crate::packages::keymap::NamedCommand;
+use crate::packages::macros::Step;
 
 /// Typing opens the list once a word is this long.
 const MIN_TYPED_CHARS: usize = 2;

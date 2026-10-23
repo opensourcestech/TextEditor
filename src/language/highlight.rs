@@ -369,7 +369,7 @@ fn load_themes(files: &[Resource]) -> (BTreeMap<String, Theme>, Vec<String>) {
     let mut themes: BTreeMap<String, Theme> = ThemeSet::load_defaults().themes.into_iter().collect();
     for file in files {
         let theme = if crate::packages::is_kind(&file.path, "color-scheme") {
-            file.text().and_then(crate::color_scheme::parse)
+            file.text().and_then(crate::language::color_scheme::parse)
         } else {
             ThemeSet::load_from_reader(&mut Cursor::new(&file.data)).map_err(|e| e.to_string())
         };

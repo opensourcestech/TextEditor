@@ -3,7 +3,7 @@
 //! Without wrapping every line is exactly one row. Plugins' phantoms can
 //! add rows of their own below a line.
 
-use crate::buffer::{Buffer, LineSplice};
+use crate::text::buffer::{Buffer, LineSplice};
 
 /// Character widths, with the x position so tabs can reach the next stop.
 pub type Width<'a> = &'a dyn Fn(char, f32) -> f32;
@@ -252,7 +252,7 @@ impl RowMap {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::buffer::{EditKind, Selection};
+    use crate::text::buffer::{EditKind, Selection};
 
     const W: Width = &|_, _| 1.0;
 

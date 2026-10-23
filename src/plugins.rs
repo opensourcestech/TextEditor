@@ -1,5 +1,5 @@
 //! Python plugins, run in a separate process, the plugin host
-//! (`src/plugin_host/`), which gives plugins the `texteditor` module, and
+//! (`src/plugins/plugin_host/`), which gives plugins the `texteditor` module, and
 //! for Sublime Text's plugins, `sublime` and `sublime_plugin`. The host and the editor exchange JSON
 //! messages, one per line, over the host's stdin and stdout; while a plugin
 //! runs, the host asks the editor for text and changes (`app::plugin_api`).
@@ -16,13 +16,13 @@ use serde_json::{Value, json};
 
 /// The host's Python files, written out next to each other before it starts.
 const HOST_FILES: [(&str, &str); 7] = [
-    ("host.py", include_str!("plugin_host/host.py")),
-    ("_host.py", include_str!("plugin_host/_host.py")),
-    ("_plugins.py", include_str!("plugin_host/_plugins.py")),
-    ("sublime.py", include_str!("plugin_host/sublime.py")),
-    ("sublime_plugin.py", include_str!("plugin_host/sublime_plugin.py")),
-    ("sublime_api.py", include_str!("plugin_host/sublime_api.py")),
-    ("texteditor.py", include_str!("plugin_host/texteditor.py")),
+    ("host.py", include_str!("plugins/plugin_host/host.py")),
+    ("_host.py", include_str!("plugins/plugin_host/_host.py")),
+    ("_plugins.py", include_str!("plugins/plugin_host/_plugins.py")),
+    ("sublime.py", include_str!("plugins/plugin_host/sublime.py")),
+    ("sublime_plugin.py", include_str!("plugins/plugin_host/sublime_plugin.py")),
+    ("sublime_api.py", include_str!("plugins/plugin_host/sublime_api.py")),
+    ("texteditor.py", include_str!("plugins/plugin_host/texteditor.py")),
 ];
 
 pub struct PluginHost {

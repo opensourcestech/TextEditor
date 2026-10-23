@@ -13,7 +13,7 @@ pub struct Recent {
 impl Recent {
     /// Loads `recent.json` from the settings folder.
     pub fn load() -> Self {
-        let file = crate::settings::config_dir().map(|d| d.join("recent.json"));
+        let file = crate::workspace::settings::config_dir().map(|d| d.join("recent.json"));
         let paths = file
             .as_ref()
             .and_then(|f| std::fs::read_to_string(f).ok())
