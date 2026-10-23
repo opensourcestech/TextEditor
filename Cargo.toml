@@ -1,0 +1,44 @@
+[package]
+name = "text_editor"
+version = "0.1.0"
+edition = "2024"
+# egui 0.37 needs Rust 1.95.
+rust-version = "1.95"
+description = "A fast, native text editor with multiple cursors, Goto Anything and a command palette"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["editor", "text-editor", "egui", "multiple-cursors", "syntax-highlighting"]
+categories = ["text-editors"]
+
+[dependencies]
+arboard = { version = "3.7", default-features = false }
+dirs = "6"
+eframe = "0.37.0"
+rfd = "0.17.2"
+ropey = { version = "1.6", default-features = false, features = ["simd"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+syntect = "5.3.0"
+two-face = "0.5"
+zip = { version = "9.0.5", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+muda = "0.21.2"
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication"] }
+objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSAppleEventDescriptor", "NSAppleEventManager", "NSNotification", "NSString", "NSURL"] }
+
+# Syntax highlighting and text layout are far too slow unoptimized, even while
+# developing; optimizing just the dependencies keeps our own builds quick.
+[profile.dev.package."*"]
+opt-level = 2
+
+[profile.release]
+strip = true
+
+[dev-dependencies]
+egui_kittest = { version = "0.37", features = ["eframe", "wgpu", "snapshot"] }
+
+# Builds the icon into TextEditor.exe (see build.rs).
+[build-dependencies]
+winresource = "0.1"
