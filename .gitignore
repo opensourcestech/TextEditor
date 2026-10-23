@@ -1,7 +1,6 @@
 /target
 /dist
 .DS_Store
-CLAUDE.local.md
 __pycache__/
 # The tools that drew the app icon stay local; only the icons are shared.
 /packaging/macos/make_icon.swift
